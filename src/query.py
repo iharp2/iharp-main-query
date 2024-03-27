@@ -8,6 +8,24 @@ All queries should return result as xarray.DataArray.
 import xarray
 
 
+def single_value_aggregation_query(
+    variable: str,
+    min_lat: float,
+    max_lat: float,
+    min_lon: float,
+    max_lon: float,
+    start_datetime: str,
+    end_datetime: str,
+    aggregation_method: str,  # e.g., "mean", "max", "min"
+) -> xarray.DataArray:
+    """
+    "have a single value of a certain variable V over area A and time period T"
+    E.g., "find the average temperature of Greenland over the last year."
+    """
+    # TODO: Implement this function
+    return xarray.DataArray()
+
+
 def time_series_query(
     variable: str,
     min_lat: float,
@@ -17,7 +35,7 @@ def time_series_query(
     start_datetime: str,
     end_datetime: str,
     time_resolution: str,
-    aggregation_method: str,
+    aggregation_method: str,  # e.g., "mean", "max", "min"
 ) -> xarray.DataArray:
     """
     "have a time series of a certain variable V over area A and time period T"
@@ -35,7 +53,7 @@ def heat_map_query(
     max_lon: float,
     start_datetime: str,
     end_datetime: str,
-    aggregation_method: str,
+    aggregation_method: str,  # e.g., "mean", "max", "min"
 ) -> xarray.DataArray:
     """
     "have the heatmap of a certain variable V over a certain area A and certain time period T"
@@ -66,7 +84,7 @@ def value_predicate_query(
 
 def arbitrary_shape_query(
     variable: str,
-    shape: str,
+    shape: str,  # e.g., "greenland", "iceland", "tri", "rec"
     start_datetime: str,
     end_datetime: str,
 ) -> xarray.DataArray:
