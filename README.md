@@ -1,5 +1,10 @@
 # iharp-main-query
 
+To run tests, run `pytest` in terminal. 
+```bash
+pytest
+```
+
 ## List of queries
 - [ ] Area finding query
   - "find an area A that satisfies a certain criteria"
