@@ -10,7 +10,7 @@ pytest
 | Query                    | Single File        | Multi Files | Files + API | pre-aggregation | pre-aggregation + API |
 | ------------------------ | ------------------ | ----------- | ----------- | --------------- | --------------------- |
 | single value aggregation | :white_check_mark: |             |             |                 |                       |
-| time series aggregation  |                    |             |             |                 |                       |
+| time series aggregation  | :white_check_mark: |             |             |                 |                       |
 | heatmap aggregation      |                    |             |             |                 |                       |
 | arbitrary shape query    |                    |             |             |                 |                       |
 | value-criteria query     |                    |             |             |                 |                       |
