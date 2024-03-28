@@ -1,4 +1,4 @@
-# iharp-main-query
+# iharp-pure-query
 
 To run tests, run `pytest` in terminal. 
 ```bash
