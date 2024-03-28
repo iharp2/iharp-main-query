@@ -9,3 +9,5 @@ pytest
 1. Query execution involving single file
 2. Query execution involving multiple files
 3. Query execution involving API calls
+4. Query execution involving pre-aggregation files
+5. Query execution involving pre-aggregation + API
