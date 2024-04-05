@@ -13,7 +13,7 @@ pytest
 | time series aggregation            | :white_check_mark: | :white_check_mark: |             |                 |                       |
 | heatmap aggregation (single layer) | :white_check_mark: | :white_check_mark: |             |                 |                       |
 | heatmap aggregation (multi layer)  | :white_check_mark: | :white_check_mark: |             |                 |                       |
+| value-criteria query               | :white_check_mark: | :white_check_mark: |             |                 |                       |
 | arbitrary shape query              |                    |                    |             |                 |                       |
-| value-criteria query               |                    |                    |             |                 |                       |
 | time period finding                |                    |                    |             |                 |                       |
 | area finding                       |                    |                    |             |                 |                       |

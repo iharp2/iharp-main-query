@@ -168,3 +168,41 @@ def heat_map_query_multi_layer(
         time_resolution=time_resolution,
         time_agg_method=time_agg_method,
     )
+
+def value_criteria_query(
+    variable: str,
+    min_lat: float,
+    max_lat: float,
+    min_lon: float,
+    max_lon: float,
+    start_datetime: str,
+    end_datetime: str,
+    criteria_predicate: str,  # e.g., "=", ">", "<"
+    criteria_value: float,
+    spatial_resolution: float = 0.25,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
+    spatial_agg_method: str = "mean",  # e.g., "mean", "max", "min"
+    time_resolution: str = "hour",  # e.g., "hour", "day", "month", "year"
+    time_agg_method: str = "mean",  # e.g., "mean", "max", "min"
+) -> xr.Dataset:
+    xa = raster_data_access_multiple_files(
+        variable=variable,
+        min_lat=min_lat,
+        max_lat=max_lat,
+        min_lon=min_lon,
+        max_lon=max_lon,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        spatial_resolution=spatial_resolution,
+        spatial_agg_method=spatial_agg_method,
+        time_resolution=time_resolution,
+        time_agg_method=time_agg_method,
+    )
+    if criteria_predicate == "=":
+        result = xa.where(xa == criteria_value)
+    elif criteria_predicate == ">":
+        result = xa.where(xa > criteria_value)
+    elif criteria_predicate == "<":
+        result = xa.where(xa < criteria_value)
+    else:
+        raise ValueError(f"Invalid criteria predicate: {criteria_predicate}")
+    return result
