@@ -6,14 +6,7 @@ All queries should return result as xarray.Dataset.
 """
 
 import xarray as xr
-
-
-def gen_file_name(variable: str, datetime: str) -> str:
-    """
-    Generate the file name for the given variable and datetime
-    """
-    datetime = datetime.split(" ")[0]  # transform datetime, e.g., "2023-01-01 00:00:00" -> "2023-01-01"
-    return f"data/ERA5/{variable}-{datetime}.nc"
+from get_data_query import *
 
 
 def single_value_aggregation_query(
@@ -30,12 +23,14 @@ def single_value_aggregation_query(
     "have a single value of a certain variable V over area A and time period T"
     E.g., "find the average temperature of Greenland over the last year."
     """
-    file_name = gen_file_name(variable, start_datetime)
-    xa = xr.open_dataset(file_name)
-    xa = xa.sel(
-        latitude=slice(max_lat, min_lat),
-        longitude=slice(min_lon, max_lon),
-        time=slice(start_datetime, end_datetime),
+    xa = raster_data_access_multiple_files(
+        variable=variable,
+        min_lat=min_lat,
+        max_lat=max_lat,
+        min_lon=min_lon,
+        max_lon=max_lon,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
     )
     if aggregation_method == "mean":
         result = xa.mean()
@@ -63,12 +58,14 @@ def time_series_query(
     "have a time series of a certain variable V over area A and time period T"
     E.g., "draw the average temperature heatmap of Greenland over the last year."
     """
-    file_name = gen_file_name(variable, start_datetime)
-    xa = xr.open_dataset(file_name)
-    xa = xa.sel(
-        latitude=slice(max_lat, min_lat),
-        longitude=slice(min_lon, max_lon),
-        time=slice(start_datetime, end_datetime),
+    xa = raster_data_access_multiple_files(
+        variable=variable,
+        min_lat=min_lat,
+        max_lat=max_lat,
+        min_lon=min_lon,
+        max_lon=max_lon,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
     )
 
     def resample_time_resolution(xa, time_resolution):
@@ -107,7 +104,7 @@ def time_series_query(
     return result
 
 
-def heat_map_query(
+def heat_map_query_single_layer(
     variable: str,
     min_lat: float,
     max_lat: float,
@@ -115,17 +112,37 @@ def heat_map_query(
     max_lon: float,
     start_datetime: str,
     end_datetime: str,
-    aggregation_method: str,  # e.g., "mean", "max", "min"
+    spatial_resolution: float = 0.25,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
+    spatial_agg_method: str = "mean",  # e.g., "mean", "max", "min"
+    time_agg_method: str = "mean",  # e.g., "mean", "max", "min"
 ) -> xr.Dataset:
     """
     "have the heatmap of a certain variable V over a certain area A and certain time period T"
     E.g., "draw the average temperature heatmap of Green- land over the last year."
     """
-    # TODO: Implement this function
-    return xr.Dataset()
+    xa = raster_data_access_multiple_files(
+        variable=variable,
+        min_lat=min_lat,
+        max_lat=max_lat,
+        min_lon=min_lon,
+        max_lon=max_lon,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        spatial_resolution=spatial_resolution,
+        spatial_agg_method=spatial_agg_method,
+    )
+    if time_agg_method == "mean":
+        result = xa.mean(dim="time")
+    elif time_agg_method == "max":
+        result = xa.max(dim="time")
+    elif time_agg_method == "min":
+        result = xa.min(dim="time")
+    else:
+        raise ValueError(f"Invalid aggregation method: {time_agg_method}")
+    return result
 
 
-def value_predicate_query(
+def heat_map_query_multi_layer(
     variable: str,
     min_lat: float,
     max_lat: float,
@@ -133,26 +150,21 @@ def value_predicate_query(
     max_lon: float,
     start_datetime: str,
     end_datetime: str,
-    predicate_verb: str,  # e.g., "=", ">", "<", ">=", "<=", "!="
-    predicate_value: float,
+    spatial_resolution: float = 0.25,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
+    spatial_agg_method: str = "mean",  # e.g., "mean", "max", "min"
+    time_resolution: str = "hour",  # e.g., "hour", "day", "month", "year"
+    time_agg_method: str = "mean",  # e.g., "mean", "max", "min"
 ) -> xr.Dataset:
-    """
-    "retrieve records based on a certain variable criteria"
-    E.g., "find all data records in the world over the last year where the temperature has exceeded 240."
-    """
-    # TODO: Implement this function
-    return xr.Dataset()
-
-
-def arbitrary_shape_query(
-    variable: str,
-    shape: str,  # e.g., "greenland", "iceland", "tri", "rec"
-    start_datetime: str,
-    end_datetime: str,
-) -> xr.Dataset:
-    """
-    "retrieve records within an arbitrary shape"
-    E.g., "find all data records in Greenland over the last year."
-    """
-    # TODO: Implement this function
-    return xr.Dataset()
+    return raster_data_access_multiple_files(
+        variable=variable,
+        min_lat=min_lat,
+        max_lat=max_lat,
+        min_lon=min_lon,
+        max_lon=max_lon,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        spatial_resolution=spatial_resolution,
+        spatial_agg_method=spatial_agg_method,
+        time_resolution=time_resolution,
+        time_agg_method=time_agg_method,
+    )
