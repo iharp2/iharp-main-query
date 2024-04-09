@@ -6,3 +6,5 @@ hvplot
 geoviews
 scipy
 pytest
+geopandas
+plotly
