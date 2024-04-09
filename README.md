@@ -1,5 +1,7 @@
 # iharp-pure-query
 
+HTML preview: https://html-preview.github.io/?url=https://github.com/iharp2/iharp-pure-query/blob/main/src/example.html
+
 Run `init_venv.sh` to initialize virtual environment and install packages. 
 ```bash
 bash init_venv.sh
