@@ -22,5 +22,5 @@ pytest
 | heatmap aggregation (multi layer)  | :white_check_mark: | :white_check_mark: |             |                 |                       |
 | value-criteria query               | :white_check_mark: | :white_check_mark: |             |                 |                       |
 | arbitrary shape query              |                    |                    |             |                 |                       |
-| time period finding                |                    |                    |             |                 |                       |
+| time period finding                | :white_check_mark: | :white_check_mark: |             |                 |                       |
 | area finding                       | :white_check_mark: | :white_check_mark: |             |                 |                       |
