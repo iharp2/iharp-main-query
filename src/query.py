@@ -8,6 +8,10 @@ All queries should return result as xarray.Dataset.
 import xarray as xr
 from get_data_query import *
 
+variable_short_name = {
+    "2m_temperature": "t2m",
+}
+
 
 def single_value_aggregation_query(
     variable: str,
@@ -169,6 +173,7 @@ def heat_map_query_multi_layer(
         time_agg_method=time_agg_method,
     )
 
+
 def value_criteria_query(
     variable: str,
     min_lat: float,
@@ -206,3 +211,44 @@ def value_criteria_query(
     else:
         raise ValueError(f"Invalid criteria predicate: {criteria_predicate}")
     return result
+
+
+def area_finding_query(
+    variable: str,
+    min_lat: float,
+    max_lat: float,
+    min_lon: float,
+    max_lon: float,
+    start_datetime: str,
+    end_datetime: str,
+    criteria_predicate: str,  # e.g., "=", ">", "<"
+    criteria_value: float,
+    any_or_all: str,  # e.g., "any", "all"
+    spatial_resolution: float = 0.25,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
+    spatial_agg_method: str = "mean",  # e.g., "mean", "max", "min"
+    time_resolution: str = "hour",  # e.g., "hour", "day", "month", "year"
+    time_agg_method: str = "mean",  # e.g., "mean", "max", "min"
+) -> xr.Dataset:
+    xa = value_criteria_query(
+        variable=variable,
+        min_lat=min_lat,
+        max_lat=max_lat,
+        min_lon=min_lon,
+        max_lon=max_lon,
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        criteria_predicate=criteria_predicate,
+        criteria_value=criteria_value,
+        spatial_resolution=spatial_resolution,
+        spatial_agg_method=spatial_agg_method,
+        time_resolution=time_resolution,
+        time_agg_method=time_agg_method,
+    )
+    short_name = variable_short_name[variable]
+    if any_or_all == "any":
+        xa["spatial_mask"] = xa[short_name].notnull().any(dim=["time"]).astype(bool)
+    elif any_or_all == "all":
+        xa["spatial_mask"] = xa[short_name].notnull().all(dim=["time"]).astype(bool)
+    else:
+        raise ValueError(f"Invalid any_or_all: {any_or_all}")
+    return xa
