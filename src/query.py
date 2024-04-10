@@ -7,6 +7,10 @@ All queries should return result as xarray.Dataset.
 
 import xarray as xr
 from get_data_query import *
+import geopandas as gpd
+import rasterio
+from rasterio.features import geometry_mask
+import odc.geo.xr
 
 variable_short_name = {
     "2m_temperature": "t2m",
@@ -292,4 +296,34 @@ def time_period_query(
         xa["time_mask"] = xa[short_name].notnull().all(dim=["latitude", "longitude"]).astype(bool)
     else:
         raise ValueError(f"Invalid any_or_all: {any_or_all}")
+    return xa
+
+
+def shape_query(
+    variable: str,
+    shape_fpath: str,
+    start_datetime: str,
+    end_datetime: str,
+    spatial_resolution: float = 0.25,  # e.g., 0.25, 0.5, 1.0, 2.5, 5.0
+    spatial_agg_method: str = "mean",  # e.g., "mean", "max", "min"
+    time_resolution: str = "hour",  # e.g., "hour", "day", "month", "year"
+    time_agg_method: str = "mean",  # e.g., "mean", "max", "min"
+) -> xr.Dataset:
+    gdf_shape = gpd.read_file(shape_fpath)
+    xa = raster_data_access_multiple_files(
+        variable=variable,
+        min_lat=gdf_shape.bounds.miny[0],
+        max_lat=gdf_shape.bounds.maxy[0],
+        min_lon=gdf_shape.bounds.minx[0],
+        max_lon=gdf_shape.bounds.maxx[0],
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+        spatial_resolution=spatial_resolution,
+        spatial_agg_method=spatial_agg_method,
+        time_resolution=time_resolution,
+        time_agg_method=time_agg_method,
+    )
+
+    geom_mask = geometry_mask(geometries=gdf_shape.iloc[0], out_shape=xa.odc.geobox.shape, transform=xa.odc.geobox.affine, invert=True)
+    xa = xa.assign(shape_mask=(("latitude", "longitude"), geom_mask))
     return xa

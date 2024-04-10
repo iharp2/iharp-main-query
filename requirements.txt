@@ -8,3 +8,6 @@ scipy
 pytest
 geopandas
 plotly
+odc-geo
+rioxarray
+rasterio
