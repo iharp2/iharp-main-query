@@ -29,7 +29,7 @@ pytest
 
 ## Example
 
-| Query                                                                                                                                         |               Single File                |
+| Query                                                                                                                                         |                 Example                  |
 | --------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------: |
 | single value aggregation (average temperature in the area during the period of time)                                                          |  ![](screenshots/single_value_agg.png)   |
 | time series aggregation (daily average temperature in the area during the period of time)                                                     |     ![](screenshots/time_series.png)     |
