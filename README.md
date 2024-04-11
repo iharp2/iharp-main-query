@@ -28,6 +28,7 @@ pytest
 | area finding                       | :white_check_mark: | :white_check_mark: |             |                 |                       |
 
 ## Example
+
 | Query                                                                                                                                         |               Single File                |
 | --------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------: |
 | single value aggregation (average temperature in the area during the period of time)                                                          |  ![](screenshots/single_value_agg.png)   |
